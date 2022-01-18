@@ -1,0 +1,17 @@
+{
+    "token_address": "0x4e3b51c7faaeb2bf24134ae74f386b668e08a5cf",
+    "token_id": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "block_number_minted": "10006853",
+    "owner_of": "0x36afc8a07aab1960419ef0b22c56d552afb6a979",
+    "block_number": "10006853",
+    "amount": "1",
+    "contract_type": "ERC721",
+    "name": "MyNFT",
+    "symbol": "NFT",
+    "token_uri": "https://ipfs.moralis.io:2053/ipfs/QmYQGyNRhA77minsyX6NxRLxXVRn1CS7VFATy3dTNbiSjL",
+    "metadata": null,
+    "synced_at": "2022-01-17T12:56:49.130Z",
+    "is_valid": 0,
+    "syncing": 2,
+    "frozen": 0
+}
