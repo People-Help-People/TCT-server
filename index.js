@@ -12,7 +12,7 @@ app.get('/nft/verify', async (req, res) => {
     const nft = req.query.nft;
     const owner = req.query.owner;
     const chain = req.query.chain;
-    let nftOwner;
+    let nftOwner="";
 
     // make RPC call to chain to verify nft
     const nftResult = await fetch(`https://deep-index.moralis.io/api/v2/nft/${nft}/owners?chain=${chain}&format=hex`, {
