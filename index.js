@@ -12,7 +12,7 @@ app.get('/nft/verify', async (req, res) => {
     const nft = req.query.nft;
     const owner = req.query.owner;
     const chain = req.query.chain;
-    let nftOwner="";
+    let nftOwner = "";
 
     // make RPC call to chain to verify nft
     const nftResult = await fetch(`https://deep-index.moralis.io/api/v2/nft/${nft}/owners?chain=${chain}&format=hex`, {
@@ -33,12 +33,41 @@ app.get('/nft/verify', async (req, res) => {
             success: true,
         });
     } else {
-        res.send({
+        res.json({
             success: false,
         });
     }
 });
 
-app.listen(process.env.PORT,process.env.IP, () => {
+app.get('/twitter/verify', async (req, res) => {
+    const tweet = req.query.tweet;
+    const account = req.query.account;
+    let twitterOwner = "";
+
+    //get tweet owner
+    const tweetResult = await fetch(`https://api.twitter.com/2/tweets?ids=${tweet}&expansions=author_id&user.fields=username`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${process.env.TWITTER_API_KEY}`
+        }
+    });
+    const tweetResultJson = await tweetResult.json();
+    const tweetText = tweetResultJson.data[0].text;
+    const walletAdddress = tweetText.substr(24, 42);
+    const tweetAuthor = tweetResultJson.includes.users[0].username;
+
+    if (walletAdddress.toUpperCase() === account.toUpperCase()) {
+        res.json({
+            username: tweetAuthor,
+        });
+    } else {
+        res.json({
+            username: "RickAstley",
+        });
+    }
+})
+
+app.listen(4000, () => {
     console.log('Server is running on port 4000');
 });
