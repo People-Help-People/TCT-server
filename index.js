@@ -41,7 +41,7 @@ app.get('/nft/verify', async (req, res) => {
 
 app.get('/twitter/verify', async (req, res) => {
     const tweet = req.query.tweet;
-    const account = req.query.account;
+    const randid = req.query.randid;
     let twitterOwner = "";
 
     //get tweet owner
@@ -54,10 +54,10 @@ app.get('/twitter/verify', async (req, res) => {
     });
     const tweetResultJson = await tweetResult.json();
     const tweetText = tweetResultJson.data[0].text;
-    const walletAdddress = tweetText.substr(24, 42);
+    const tweetRandID = tweetText.substr(25, 20);
     const tweetAuthor = tweetResultJson.includes.users[0].username;
 
-    if (walletAdddress.toUpperCase() === account.toUpperCase()) {
+    if (tweetRandID.toUpperCase() === randid.toUpperCase()) {
         res.json({
             username: tweetAuthor,
         });
