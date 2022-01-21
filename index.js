@@ -68,6 +68,15 @@ app.get('/twitter/verify', async (req, res) => {
     }
 })
 
-app.listen(process.env.PORT, process.env.IP, () => {
-    console.log('Server is running on port 4000');
-});
+//Server Setup
+if (process.env.PORT) {
+    app.listen(process.env.PORT, process.env.IP, () => {
+        console.log('Server is running on port ' + process.env.PORT);
+    });
+} else {
+    app.listen(4000, () => {
+        console.log('Server is running on port 4000');
+    });
+}
+
+
