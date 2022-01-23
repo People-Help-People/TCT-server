@@ -56,7 +56,9 @@ app.get('/nft/balance', async (req, res) => {
             }
         });
         const balanceResultJson = await balanceResult.json();
-        const validNFTs = balanceResultJson.result.filter(nft => nft.is_valid).map(nft => {
+        const validNFTs = balanceResultJson.result
+            // .filter(nft => nft.is_valid)
+            .map(nft => {
             return {
                 token_address: nft.token_address,
                 block_number: nft.block_number,
