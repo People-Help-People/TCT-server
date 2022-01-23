@@ -1,8 +1,11 @@
 import express from "express";
 import fetch from "node-fetch";
+import cors from "cors";
 const app = express();
 import dotenv from "dotenv";
 dotenv.config();
+
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -37,6 +40,42 @@ app.get('/nft/verify', async (req, res) => {
             success: false,
         });
     }
+});
+
+app.get('/nft/balance', async (req, res) => {
+    const address = req.query.address;
+    const chains = ["mainnet", "rinkeby", "ropsten", "kovan", "polygon", "mumbai"];
+
+    const nftBalances = await Promise.all(chains.map(async (chain) => {
+        // make RPC call to chain to get balance of address
+        const balanceResult = await fetch(`https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain}&format=hex`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-API-KEY': process.env.MORALIS_API_KEY
+            }
+        });
+        const balanceResultJson = await balanceResult.json();
+        const validNFTs = balanceResultJson.result
+            // .filter(nft => nft.is_valid)
+            .map(nft => {
+            return {
+                token_address: nft.token_address,
+                block_number: nft.block_number,
+                name: nft.name,
+                symbol: nft.symbol,
+                token_uri: nft.token_uri,
+                synced_at: nft.synced_at,
+                metadata: nft.metadata,
+            }
+         });
+        
+        return {
+            chain: chain,
+            balance: validNFTs
+        };
+    }));
+    res.json(nftBalances);
 });
 
 app.get('/twitter/verify', async (req, res) => {
@@ -78,5 +117,3 @@ if (process.env.PORT) {
         console.log('Server is running on port 4000');
     });
 }
-
-
