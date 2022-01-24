@@ -30,6 +30,7 @@ const balance = async (req, res) => {
         .map((nft) => {
           return {
             token_address: nft.token_address,
+            token_id: nft.token_id,
             block_number: nft.block_number,
             name: nft.name,
             symbol: nft.symbol,
