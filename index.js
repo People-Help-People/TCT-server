@@ -13,6 +13,7 @@ app.get('/', (req, res) => {
 
 app.get('/nft/verify', async (req, res) => {
     const nft = req.query.nft;
+    const token_id = req.query.token_id;
     const owner = req.query.owner;
     const chain = req.query.chain;
     let nftOwner = "";
@@ -29,9 +30,10 @@ app.get('/nft/verify', async (req, res) => {
 
     if (nftResultJson.total === 1) {
         nftOwner = nftResultJson.result[0].owner_of;
+        nftToken = nftResultJson.result[0].token_id;
     }
 
-    if (nftOwner.toUpperCase() === owner.toUpperCase()) {
+    if (nftOwner.toUpperCase() === owner.toUpperCase() && nftToken === token_id) {
         res.json({
             success: true,
         });
@@ -61,6 +63,7 @@ app.get('/nft/balance', async (req, res) => {
             .map(nft => {
             return {
                 token_address: nft.token_address,
+                token_id: nft.token_id,
                 block_number: nft.block_number,
                 name: nft.name,
                 symbol: nft.symbol,
