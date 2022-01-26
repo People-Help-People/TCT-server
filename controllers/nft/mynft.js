@@ -3,10 +3,52 @@ import fetch from "node-fetch";
 const mynft = async (req, res) => {
   const { address } = req.query;
   if (!address) return res.status(400).send({ error: "Address is required" });
-  const chains = ["1", "42", "137", "80001", "43114", "43113"];
+  const chains = {
+    mainnet: "1",
+
+    kovan: "42",
+
+    polygon: "137",
+
+    mumbai: "80001",
+  };
+
   try {
+    const nftBalancesMor = await Promise.all(
+      Object.keys(chains).map(async (chain) => {
+        // make RPC call to chain to get balance of address
+        const balanceResult = await fetch(
+          `https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain}&format=hex`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-API-KEY": process.env.MORALIS_API_KEY,
+            },
+          }
+        );
+        const balanceResultJson = await balanceResult.json();
+        const validNFTs = balanceResultJson.result
+          // .filter(nft => nft.is_valid)
+          .map((nft) => {
+            return {
+              token_address: nft.token_address,
+              block_number: nft.block_number,
+              name: nft.name,
+              symbol: nft.symbol,
+              token_uri: nft.token_uri,
+              synced_at: nft.synced_at,
+              metadata: nft.metadata,
+            };
+          });
+        return {
+          chain: chains[chain],
+          balance: validNFTs,
+        };
+      })
+    );
     const nftBalances = await Promise.all(
-      chains.map(async (chain) => {
+      Object.values(chains).map(async (chain) => {
         const nftData = await fetch(
           `${process.env.COVALENTHQ_BASE_URL}/${Number(
             chain
@@ -20,6 +62,12 @@ const mynft = async (req, res) => {
           .map((nft) => {
             return {
               token_address: nft.contract_address,
+              block_number: nftBalancesMor
+                .find((nftMor) => nftMor.chain === chain)
+                .balance.find(
+                  (currentToken) =>
+                    currentToken.token_address === nft.contract_address
+                ).block_number,
               name: nft.contract_name,
               symbol: nft.contract_ticker_symbol,
               synced_at: nft.last_transferred_at,
@@ -27,7 +75,7 @@ const mynft = async (req, res) => {
             };
           });
         return {
-          chain: chain,
+          chain: Object.keys(chains).find((key) => chains[key] === chain),
           balance: validNft,
         };
       })
