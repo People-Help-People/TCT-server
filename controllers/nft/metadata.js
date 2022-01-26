@@ -10,14 +10,11 @@ const metaData = async (req, res) => {
     });
   try {
     const nftData = await fetch(
-      `https://deep-index.moralis.io/api/v2/nft/${address}/${token_id}?chain=${chain}&format=decimal`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "X-API-KEY": process.env.MORALIS_API_KEY,
-        },
-      }
+      `${process.env.COVALENTHQ_BASE_URL}/${Number(
+        chain
+      )}/tokens/${address}/nft_metadata/${token_id}/?key=${
+        process.env.COVALENTHQ_API_KEY
+      }`
     );
     const jsonData = await nftData.json();
     return res.send(jsonData);

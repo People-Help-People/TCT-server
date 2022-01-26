@@ -7,7 +7,6 @@ import nftRouter from "./routes/nft.js";
 
 dotenv.config();
 
-
 app.use("/nft", nftRouter);
 
 app.get("/", (_, res) => {
