@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import nftRouter from "./routes/nft.js";
 
 dotenv.config();
-app.use(cors());
+
 
 app.use("/nft", nftRouter);
 
@@ -45,6 +45,8 @@ app.get("/twitter/verify", async (req, res) => {
     });
   }
 });
+
+app.use(cors());
 
 //Server Setup
 if (process.env.PORT) {
