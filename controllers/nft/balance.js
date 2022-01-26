@@ -15,7 +15,7 @@ const balance = async (req, res) => {
     chains.map(async (chain) => {
       // make RPC call to chain to get balance of address
       const balanceResult = await fetch(
-        `https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain}&format=hex`,
+        `${process.env.MORALIS_BASE_URL}/${address}/nft?chain=${chain}&format=hex`,
         {
           headers: {
             "Content-Type": "application/json",
